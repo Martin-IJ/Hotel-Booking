@@ -1,4 +1,4 @@
-import { CreateReviewDto } from "./../models/review";
+import { CreateReviewDto, Review } from "./../models/review";
 import axios from "axios";
 
 import { CreateBookingDto, Room } from "@/models/room";
@@ -200,3 +200,15 @@ export const createReview = async ({
 
   return data;
 };
+
+export async function getRoomReviews(roomId: string) {
+  const result = await sanityClient.fetch<Review[]>(
+    queries.getRoomReviewsQuery,
+    {
+      roomId,
+    },
+    { cache: "no-cache" }
+  );
+
+  return result;
+}

@@ -14,6 +14,7 @@ import HotelPhotoGallery from "@/components/HotelPhotoGallery/HotelPhotoGallery"
 import BookRoomCta from "@/components/BookRoomCta/BookRoomCta";
 import toast from "react-hot-toast";
 import { getStripe } from "@/libs/stripe";
+import RoomReview from "@/components/RoomReview/RoomReview";
 
 const RoomDetails = (props: { params: { slug: string } }) => {
   const {
@@ -78,7 +79,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error("An error occured");
+      toast.error("An error occurred");
     }
   };
 
@@ -101,11 +102,11 @@ const RoomDetails = (props: { params: { slug: string } }) => {
                 {room.name} ({room.dimension})
               </h2>
 
-              <div className="flex my-11">
+              <div className="flex gap-3 my-11">
                 {room.offeredAmenities.map((amenity) => (
                   <div
                     key={amenity._key}
-                    className="md:w-44 w-full text-center px-2 md:px-0 h-20 md:h-40 mr-3 bg-[#eff0f2] dark:bg-gray-800 rounded-lg grid place-content-center"
+                    className="lg:w-44 w-full text-center px-2 md:px-0 h-20 md:h-40 bg-[#eff0f2] dark:bg-gray-800 rounded-lg grid place-content-center"
                   >
                     <i className={`fa-solid ${amenity.icon} md:text-2xl`}></i>
                     <p className="text-xs md:text-base pt-3">
@@ -117,7 +118,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
 
               <div className="mb-11">
                 <h2 className="font-bold text-3xl mb-2">Description</h2>
-                <p>{room.description}</p>
+                <p className="text-justify">{room.description}</p>
               </div>
 
               <div className="mb-11">
@@ -170,7 +171,7 @@ const RoomDetails = (props: { params: { slug: string } }) => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Reviews */}
+                  <RoomReview roomId={room._id} />
                 </div>
               </div>
             </div>

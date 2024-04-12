@@ -27,7 +27,6 @@ export async function POST(req: Request, res: Response) {
   switch (event.type) {
     case checkout_session_completed:
       const session = event.data.object;
-      console.log(" =>", session);
 
       // Check if metadata is not null before accessing its properties
       if (session.metadata !== null) {
@@ -64,9 +63,7 @@ export async function POST(req: Request, res: Response) {
           statusText: "Booking Successful",
         });
       } else {
-        console.warn("Metadata is null. Unable to process booking."); // Example warning message
-        // Or throw an error: throw new Error('Metadata is null. Unable to process booking.');
-        // Or any other appropriate action for your application logic
+        console.warn("Metadata is null. Unable to process booking.");
 
         return new NextResponse(
           "Metadata is null. Unable to process booking.",
