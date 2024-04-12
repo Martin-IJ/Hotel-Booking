@@ -27,11 +27,11 @@ export async function POST(req: Request, res: Response) {
   switch (event.type) {
     case checkout_session_completed:
       const session = event.data.object;
-      console.log(session);
+      console.log(" =>", session);
 
-      const {
-        // @ts-ignore
-        metadata: {
+      // Check if metadata is not null before accessing its properties
+      if (session.metadata !== null) {
+        const {
           adults,
           checkinDate,
           checkoutDate,
@@ -41,35 +41,43 @@ export async function POST(req: Request, res: Response) {
           user,
           discount,
           totalPrice,
-        },
-      } = session;
+        } = session.metadata;
 
-      await createBooking({
-        adults: Number(adults),
-        checkinDate,
-        checkoutDate,
-        children: Number(children),
-        hotelRoom,
-        numberOfDays: Number(numberOfDays),
-        discount: Number(discount),
-        totalPrice: Number(totalPrice),
-        user,
-      });
+        // Now you can use the extracted metadata properties...
+        await createBooking({
+          adults: Number(adults),
+          checkinDate,
+          checkoutDate,
+          children: Number(children),
+          hotelRoom,
+          numberOfDays: Number(numberOfDays),
+          discount: Number(discount),
+          totalPrice: Number(totalPrice),
+          user,
+        });
 
-      //   Update hotel Room
-      await updateHotelRoom(hotelRoom);
+        // Update hotel Room
+        await updateHotelRoom(hotelRoom);
 
-      return NextResponse.json("Booking successful", {
-        status: 200,
-        statusText: "Booking Successful",
-      });
+        return NextResponse.json("Booking successful", {
+          status: 200,
+          statusText: "Booking Successful",
+        });
+      } else {
+        console.warn("Metadata is null. Unable to process booking."); // Example warning message
+        // Or throw an error: throw new Error('Metadata is null. Unable to process booking.');
+        // Or any other appropriate action for your application logic
+
+        return new NextResponse(
+          "Metadata is null. Unable to process booking.",
+          { status: 400 }
+        );
+      }
 
     default:
       console.log(`Unhandled event type ${event.type}`);
+      return new NextResponse(`Unhandled event type ${event.type}`, {
+        status: 400,
+      });
   }
-
-  return NextResponse.json("Event Received", {
-    status: 200,
-    statusText: "Event Received",
-  });
 }
